@@ -36,6 +36,7 @@
     "react/jsx-props-no-spreading": ["off"],
     "react/prop-types": ["off"],
     "react/no-array-index-key": ["off"],
+    "react/jsx-no-bind": ["off"],
     "no-shadow": "off",
     "prettier/prettier": [
       "error",

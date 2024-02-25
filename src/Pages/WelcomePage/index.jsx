@@ -1,7 +1,45 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
+import { PathsUrls } from "Utils/Data";
+import FeedbackDialog from "Utils/FeedbackDialog";
 import styles from "./index.module.css";
 
 function WelcomePage() {
+  // #region HOOKS
+  const [openQuizIntroDialog, setOpenQuizIntroDialog] = useState(false);
+  const navigate = useNavigate();
+  // #endregion
+
+  // #region UTIL FNS
+  function startBtnClick() {
+    setOpenQuizIntroDialog(true);
+  }
+  // #endregion
+
+  // #region QUIZ INTRO DIALOG
+
+  let quizIntroDialogContent;
+  if (openQuizIntroDialog) {
+    quizIntroDialogContent = (
+      <FeedbackDialog
+        data={{
+          title: "Good Luck...!",
+          msg: `The quiz bank contains more than 100 questions, presented in a random 
+          order for you. Feel free complete them at your own pace.`,
+        }}
+        onClose={closeQuizIntroDialog}
+      />
+    );
+  }
+
+  function closeQuizIntroDialog() {
+    setOpenQuizIntroDialog(false);
+
+    navigate(PathsUrls.quiz, { replace: "true" });
+  }
+  // #endregion
+
   return (
     <Box className={styles.parentDiv}>
       <div className={styles.welcomeContentParentDiv}>
@@ -24,7 +62,11 @@ function WelcomePage() {
         </div>
 
         <div className={styles.btnParentDiv}>
-          <Button variant="contained" className={styles.btn}>
+          <Button
+            variant="contained"
+            className={styles.btn}
+            onClick={startBtnClick}
+          >
             Start
           </Button>
           <Button variant="outlined" className={styles.btn}>
@@ -32,6 +74,7 @@ function WelcomePage() {
           </Button>
         </div>
       </div>
+      {quizIntroDialogContent}
     </Box>
   );
 }
