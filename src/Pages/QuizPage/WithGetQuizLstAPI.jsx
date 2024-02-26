@@ -32,7 +32,7 @@ function WithDailyEntries(OldComponent) {
 
     return (
       <OldComponent
-        quizLst={getQuizListAPIResponse}
+        quizLst={getQuizListAPIResponse ?? []}
         feedbackContent={apiContent}
       />
     );

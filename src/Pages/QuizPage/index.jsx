@@ -1,62 +1,56 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import FeedbackDialog from "Utils/FeedbackDialog";
 import { PathsUrls } from "Utils/Data";
 import WithDailyEntries from "./WithGetQuizLstAPI";
 import styles from "./index.module.css";
 
-function QuizPage() {
+function QuizPage({ quizLst }) {
   // #region HOOKS
-  const [openQuizIntroDialog, setOpenQuizIntroDialog] = useState(false);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(-1);
+
+  const [openQuizExplanationDialog, setOpenQuiExplanationDialog] =
+    useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (quizLst.length > 0) {
+      setCurrentQuizIndex(randomNumber(0, quizLst.length));
+    }
+  }, [quizLst]);
+
   // #endregion
 
   // #region UTIL FNS
   function startBtnClick() {
-    setOpenQuizIntroDialog(true);
+    setOpenQuiExplanationDialog(true);
+  }
+
+  // MIN(INCLUDED) MAX(EXCLUDED)
+  function randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
   }
   // #endregion
 
-  // #region QUIZ INTRO DIALOG
+  // #region QUESTION CONTENT
+  let questionContent;
 
-  let quizIntroDialogContent;
-  if (openQuizIntroDialog) {
-    quizIntroDialogContent = (
-      <FeedbackDialog
-        data={{
-          title: "Good Luck...!",
-          msg: `The quiz bank contains more than 100 questions, presented in a random 
-          order for you. Feel free complete them at your own pace.`,
-        }}
-        onClose={closeQuizIntroDialog}
-      />
-    );
-  }
+  if (quizLst.length > 0 && currentQuizIndex >= 0) {
+    const currentQuiz = quizLst[currentQuizIndex];
 
-  function closeQuizIntroDialog() {
-    setOpenQuizIntroDialog(false);
+    console.log(currentQuiz);
 
-    navigate(PathsUrls.quiz, { replace: "true" });
-  }
-  // #endregion
-
-  return (
-    <Box className={styles.parentDiv}>
-      <div className={styles.welcomeContentParentDiv}>
+    questionContent = (
+      <div className={styles.questionContentParentDiv}>
         <div>
-          <Typography variant="h4">Hello...!</Typography>
-          <Typography variant="h5">QUIZ PAG</Typography>
-          <Typography variant="body2" sx={{ marginTop: "20px" }}>
-            Brace yourself for a mind-bending journey through the intricate
-            corners of JavaScript, where every question will keep you on your
-            coding toes.
-          </Typography>
-          <Typography variant="body2">
-            Are you ready to dive into the world of JavaScript? sharpen your
-            coding prowess, challenge your knowledge, and relish the
-            satisfaction of improving your skills in one of the most dynamic
-            programming languages out there.
+          <Typography variant="h4">{`#${currentQuizIndex.toString().padStart(4, "0")}`}</Typography>
+          <Typography variant="h5">{currentQuiz.quiz}</Typography>
+          <Typography
+            variant="body2"
+            sx={{ marginTop: "20px", whiteSpace: "pre-wrap" }}
+          >
+            <code>{currentQuiz.code}</code>
           </Typography>
         </div>
 
@@ -73,7 +67,38 @@ function QuizPage() {
           </Button>
         </div>
       </div>
-      {quizIntroDialogContent}
+    );
+  }
+  // #endregion
+
+  // #region EXPLANATION DIALOG
+
+  let explanationDialogContent;
+
+  if (openQuizExplanationDialog) {
+    explanationDialogContent = (
+      <FeedbackDialog
+        data={{
+          title: "Good Luck...!",
+          msg: `The quiz bank contains more than 100 questions, presented in a random 
+          order for you. Feel free complete them at your own pace.`,
+        }}
+        onClose={closeQuizIntroDialog}
+      />
+    );
+  }
+
+  function closeQuizIntroDialog() {
+    setOpenQuiExplanationDialog(false);
+
+    navigate(PathsUrls.quiz, { replace: "true" });
+  }
+  // #endregion
+
+  return (
+    <Box className={styles.parentDiv}>
+      {questionContent}
+      {explanationDialogContent}
     </Box>
   );
 }
