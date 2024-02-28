@@ -4,48 +4,122 @@
   min-height: 100vh;
 }
 
+/*START-QUESTION CONTENT*/
 .questionContentParentDiv {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  padding: 20px 20px;
-  width: 90%;
+  width: 60%;
+  padding: 2% 5%;
   min-height: min(80vh, 600px);
   background-color: whitesmoke;
   border-top-right-radius: 30px;
   border-bottom-right-radius: 30px;
 }
 
-.btnParentDiv {
+.questionContent {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 30px;
-  width: 100%;
+  align-items: flex-start;
+  margin-left: 10%;
 }
 
-.btn {
+.questionContentBtnParentDiv {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-end;
   margin-top: 10px;
-  width: 80%;
+}
+
+.questionContentBtnParentDiv button {
+  padding-inline: 10px;
   border-radius: 20px;
 }
+/*END-QUESTION CONTENT*/
 
-/*LARGE*/
-@media screen and (min-width: 768px) {
+/*START-ANSWER CONTENT*/
+
+.answerContentParentDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 40%;
+  padding-inline: 10px;
+}
+
+.answerContent {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.answerContent button {
+  color: black;
+  padding-inline: 5vw;
+  border-radius: 10px;
+  margin-block: 10px;
+}
+
+.answerContentBtnParentDiv {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 0;
+  padding-bottom: 20px;
+}
+
+.answerContentBtnParentDiv button {
+  min-width: 30%;
+  border-radius: 20px;
+  background-color: whitesmoke;
+  color: black;
+}
+
+/*END-ANSWER CONTENT*/
+
+/*SMALL*/
+@media screen and (max-width: 768px) {
+  .parentDiv {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /*START-QUESTION CONTENT*/
   .questionContentParentDiv {
-    width: 60%;
-    padding: 5% 5%;
+    width: 100%;
+    border-radius: 30px;
+    padding-block: 7%;
   }
 
-  .btnParentDiv {
-    flex-direction: row;
-    justify-content: space-around;
-    margin-top: 10px;
+  .questionContent {
+    align-items: center;
+    margin: 0;
   }
 
-  .btn {
-    margin-top: 10px;
-    width: 200px;
+  /*END-QUESTION CONTENT*/
+
+  /*START-ANSWER CONTENT*/
+
+  .answerContentParentDiv {
+    width: 100%;
   }
+
+  .answerContent {
+    margin-top: 20px;
+  }
+
+  .answerContentBtnParentDiv {
+    padding-block: 20px;
+  }
+
+  .answerContentBtnParentDiv button {
+    min-width: 25%;
+  }
+
+  /*END-ANSWER CONTENT*/
 }

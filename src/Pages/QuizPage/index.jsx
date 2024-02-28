@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import FeedbackDialog from "Utils/FeedbackDialog";
 import { PathsUrls } from "Utils/Data";
 import WithDailyEntries from "./WithGetQuizLstAPI";
 import styles from "./index.module.css";
+import AnswerContent from "./UtilComponents";
 
 function QuizPage({ quizLst }) {
   // #region HOOKS
   const [currentQuizIndex, setCurrentQuizIndex] = useState(-1);
-
   const [openQuizExplanationDialog, setOpenQuiExplanationDialog] =
     useState(false);
   const navigate = useNavigate();
@@ -23,9 +23,6 @@ function QuizPage({ quizLst }) {
   // #endregion
 
   // #region UTIL FNS
-  function startBtnClick() {
-    setOpenQuiExplanationDialog(true);
-  }
 
   // MIN(INCLUDED) MAX(EXCLUDED)
   function randomNumber(min, max) {
@@ -39,35 +36,40 @@ function QuizPage({ quizLst }) {
   if (quizLst.length > 0 && currentQuizIndex >= 0) {
     const currentQuiz = quizLst[currentQuizIndex];
 
-    console.log(currentQuiz);
-
     questionContent = (
       <div className={styles.questionContentParentDiv}>
-        <div>
+        <div className={styles.questionContent}>
           <Typography variant="h4">{`#${currentQuizIndex.toString().padStart(4, "0")}`}</Typography>
           <Typography variant="h5">{currentQuiz.quiz}</Typography>
           <Typography
             variant="body2"
-            sx={{ marginTop: "20px", whiteSpace: "pre-wrap" }}
+            sx={{
+              marginTop: "20px",
+              whiteSpace: "pre-wrap",
+              backgroundColor: "rgb(146, 133, 192)",
+              padding: "20px",
+              borderRadius: "5px",
+            }}
           >
             <code>{currentQuiz.code}</code>
           </Typography>
         </div>
 
-        <div className={styles.btnParentDiv}>
-          <Button
-            variant="contained"
-            className={styles.btn}
-            onClick={startBtnClick}
-          >
-            Start
-          </Button>
-          <Button variant="outlined" className={styles.btn}>
-            Create Quiz
+        <div className={styles.questionContentBtnParentDiv}>
+          <Button variant="outlined" size="small">
+            Report Issue
           </Button>
         </div>
       </div>
     );
+  }
+  // #endregion
+
+  // #region ANSWER CONTENT
+  let answerContent;
+
+  if (quizLst.length > 0 && currentQuizIndex >= 0) {
+    answerContent = <AnswerContent currentQuiz={quizLst[currentQuizIndex]} />;
   }
   // #endregion
 
@@ -96,10 +98,11 @@ function QuizPage({ quizLst }) {
   // #endregion
 
   return (
-    <Box className={styles.parentDiv}>
+    <div className={styles.parentDiv}>
       {questionContent}
+      {answerContent}
       {explanationDialogContent}
-    </Box>
+    </div>
   );
 }
 
