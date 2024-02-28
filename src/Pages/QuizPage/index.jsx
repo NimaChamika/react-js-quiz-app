@@ -15,13 +15,11 @@ function QuizPage({ quizLst }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (quizLst.length > 0) {
-      setCurrentQuizIndex(randomNumber(0, quizLst.length));
-    }
+    getNextQuiz();
   }, [quizLst]);
 
-  const completedQuizIndexLst = useRef([]);
-  const correctAnswerCount = useRef(0);
+  const completedQuizIndexLstRef = useRef([]);
+  const correctAnswerCountRef = useRef(0);
 
   // #endregion
 
@@ -34,16 +32,30 @@ function QuizPage({ quizLst }) {
 
   function updateQuizResultCount(isCorrectAnswer) {
     if (isCorrectAnswer) {
-      correctAnswerCount.current += 1;
+      correctAnswerCountRef.current += 1;
     }
-    completedQuizIndexLst.current.push(currentQuizIndex);
+    completedQuizIndexLstRef.current.push(currentQuizIndex);
   }
 
   function getCurrentQuizResult() {
     return {
-      correctAnswerCount: correctAnswerCount.current,
-      completedQuizCount: completedQuizIndexLst.current.length,
+      correctAnswerCount: correctAnswerCountRef.current,
+      completedQuizCount: completedQuizIndexLstRef.current.length,
     };
+  }
+
+  function getNextQuiz() {
+    let randomIndex = randomNumber(0, quizLst.length);
+    while (completedQuizIndexLstRef.current.includes(randomIndex)) {
+      randomIndex = randomNumber(0, quizLst.length);
+    }
+    setCurrentQuizIndex(randomIndex);
+
+    if (completedQuizIndexLstRef.current.length + 1 < quizLst.length) {
+      return true;
+    }
+
+    return false;
   }
   // #endregion
 
@@ -91,6 +103,7 @@ function QuizPage({ quizLst }) {
         currentQuiz={quizLst[currentQuizIndex]}
         updateQuizResultCount={updateQuizResultCount}
         getCurrentQuizResult={getCurrentQuizResult}
+        getNextQuiz={getNextQuiz}
       />
     );
   }

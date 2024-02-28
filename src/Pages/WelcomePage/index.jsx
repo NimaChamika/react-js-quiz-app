@@ -51,15 +51,15 @@ function WelcomePage() {
           <Typography variant="h5">
             Welcome to JS Tricky Quiz Challenge.
           </Typography>
+
           <Typography variant="body2" sx={{ marginTop: "20px" }}>
-            Brace yourself for a mind-bending journey through the intricate
-            corners of JavaScript, where every question will keep you on your
-            coding toes.
+            Are you ready to dive into the world of JavaScript? Brace yourself
+            for a mind-bending journey through the intricate corners of
+            JavaScript, where every question will keep you on your coding toes.
           </Typography>
           <Typography variant="body2">
-            Are you ready to dive into the world of JavaScript? sharpen your
-            coding prowess, challenge your knowledge, and relish the
-            satisfaction of improving your skills in one of the most dynamic
+            sharpen your coding prowess, challenge your knowledge, and relish
+            the satisfaction of improving your skills in one of the most dynamic
             programming languages out there.
           </Typography>
         </div>

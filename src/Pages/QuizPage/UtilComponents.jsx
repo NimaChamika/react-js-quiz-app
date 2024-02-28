@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import FeedbackDialog from "Utils/FeedbackDialog";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +11,12 @@ function AnswerContent({
   currentQuiz,
   updateQuizResultCount,
   getCurrentQuizResult,
+  getNextQuiz,
 }) {
   // #region HOOKS
   const [selectedAnswer, setSelectedAnswer] = useState(-1);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
+  const [isQuizOver, setIsQuizOver] = useState(false);
   const [canOpenFeedbackDialog, setCanOpenFeedbackDialog] = useState({
     state: false,
     data: null,
@@ -24,6 +26,10 @@ function AnswerContent({
 
   const navigate = useNavigate();
   const theme = useTheme();
+
+  useEffect(() => {
+    resetStates();
+  }, [currentQuiz]);
   // #endregion
 
   // #region ANSWER LIST CONTENT
@@ -83,9 +89,15 @@ function AnswerContent({
           >
             Explanation
           </Button>
-          <Button variant="contained" color="secondary">
-            Next
-          </Button>
+          {!isQuizOver && (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={nextBtnClick}
+            >
+              Next
+            </Button>
+          )}
         </>
       ) : (
         <Button
@@ -128,13 +140,24 @@ function AnswerContent({
     });
   }
 
+  function nextBtnClick() {
+    const isQuizOver = !getNextQuiz();
+
+    if (isQuizOver) {
+      setIsQuizOver(true);
+    }
+  }
+
   function finishBtnClick() {
     let title;
     let msg;
 
     const result = getCurrentQuizResult();
 
-    if (result.completedQuizCount === 0) {
+    if (isQuizOver) {
+      title = "Bravo!";
+      msg = `You completed the quiz. Your result : ${result.correctAnswerCount}/${result.completedQuizCount}.`;
+    } else if (result.completedQuizCount === 0) {
       title = "Confirm Finish";
       msg =
         "You have unanswered questions. Are you sure you want to finish the quiz?";
@@ -185,7 +208,10 @@ function AnswerContent({
   // #endregion
 
   // #region UTIL FNS
-
+  function resetStates() {
+    setIsAnswerSubmitted(false);
+    setSelectedAnswer(-1);
+  }
   // #endregion
 
   return (
