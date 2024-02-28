@@ -20,12 +20,11 @@ function App() {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "rgb(92, 72, 163)",
+      main: "#0f0",
     },
     secondary: {
-      main: "#192B4A",
+      main: "#00f",
     },
-    highlight: "#d1ac00",
   },
   typography: {
     fontFamily: "Roboto",

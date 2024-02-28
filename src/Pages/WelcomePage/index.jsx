@@ -29,14 +29,17 @@ function WelcomePage() {
           order for you. Feel free complete them at your own pace.`,
         }}
         onClose={closeQuizIntroDialog}
+        isCancelBtnActive
       />
     );
   }
 
-  function closeQuizIntroDialog() {
+  function closeQuizIntroDialog(state) {
     setOpenQuizIntroDialog(false);
 
-    navigate(PathsUrls.quiz, { replace: "true" });
+    if (state) {
+      navigate(PathsUrls.quiz, { replace: "true" });
+    }
   }
   // #endregion
 

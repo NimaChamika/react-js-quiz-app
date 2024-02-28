@@ -69,7 +69,12 @@ function QuizPage({ quizLst }) {
   let answerContent;
 
   if (quizLst.length > 0 && currentQuizIndex >= 0) {
-    answerContent = <AnswerContent currentQuiz={quizLst[currentQuizIndex]} />;
+    answerContent = (
+      <AnswerContent
+        currentQuiz={quizLst[currentQuizIndex]}
+        currentQuizIndex={currentQuizIndex}
+      />
+    );
   }
   // #endregion
 
