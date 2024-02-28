@@ -1,13 +1,17 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useRef, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { useState } from "react";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import FeedbackDialog from "Utils/FeedbackDialog";
 import { useNavigate } from "react-router-dom";
 import { PathsUrls } from "Utils/Data";
 import styles from "./index.module.css";
 
-function AnswerContent({ currentQuiz, currentQuizIndex }) {
+function AnswerContent({
+  currentQuiz,
+  updateQuizResultCount,
+  getCurrentQuizResult,
+}) {
   // #region HOOKS
   const [selectedAnswer, setSelectedAnswer] = useState(-1);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
@@ -18,10 +22,8 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
     callBackFn: null,
   });
 
-  const completedQuizIndexLst = useRef([]);
-  const correctAnswerCount = useRef(0);
-
   const navigate = useNavigate();
+  const theme = useTheme();
   // #endregion
 
   // #region ANSWER LIST CONTENT
@@ -35,6 +37,9 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
         sx={{
           backgroundColor: getAnswerBtnColor(index),
           cursor: "pointer",
+          "&:hover": {
+            opacity: "0.5",
+          },
         }}
         className={styles.answer}
       >
@@ -48,11 +53,17 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
   function getAnswerBtnColor(index) {
     if (isAnswerSubmitted) {
       if (index === selectedAnswer) {
-        return selectedAnswer === currentQuiz.correctIdx ? "green" : "red";
+        return selectedAnswer === currentQuiz.correctIdx
+          ? theme.palette.success.main
+          : theme.palette.error.main;
       }
-      return index === currentQuiz.correctIdx ? "green" : "white";
+      return index === currentQuiz.correctIdx
+        ? theme.palette.success.main
+        : theme.palette.secondary.main;
     }
-    return selectedAnswer === index ? "orange" : "white";
+    return selectedAnswer === index
+      ? theme.palette.warning.main
+      : theme.palette.secondary.main;
   }
 
   function changeSelectedAnswer(index) {
@@ -67,24 +78,27 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
         <>
           <Button
             variant="contained"
-            color="success"
+            color="secondary"
             onClick={explanationBtnClick}
           >
             Explanation
           </Button>
-          <Button variant="contained">Next</Button>
+          <Button variant="contained" color="secondary">
+            Next
+          </Button>
         </>
       ) : (
         <Button
           variant="contained"
           onClick={submitBtnClick}
           disabled={selectedAnswer < 0}
+          color="secondary"
         >
           Submit
         </Button>
       )}
 
-      <Button variant="contained" onClick={finishBtnClick}>
+      <Button variant="contained" onClick={finishBtnClick} color="secondary">
         Finish
       </Button>
     </>
@@ -92,8 +106,9 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
 
   function submitBtnClick() {
     if (selectedAnswer === currentQuiz.correctIdx) {
-      correctAnswerCount.current += 1;
-      completedQuizIndexLst.current.push(currentQuizIndex);
+      updateQuizResultCount(true);
+    } else {
+      updateQuizResultCount(false);
     }
 
     setIsAnswerSubmitted(true);
@@ -106,6 +121,10 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
         title: "Explanation",
         msg: currentQuiz.exp,
       },
+      isCancelBtnActive: false,
+      callBackFn: () => {
+        closeFeedbackDialog();
+      },
     });
   }
 
@@ -113,13 +132,15 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
     let title;
     let msg;
 
-    if (completedQuizIndexLst.current.length === 1) {
+    const result = getCurrentQuizResult();
+
+    if (result.completedQuizCount === 0) {
       title = "Confirm Finish";
       msg =
         "You have unanswered questions. Are you sure you want to finish the quiz?";
     } else {
       title = "Bravo!";
-      msg = `Your result : ${correctAnswerCount.current}/${completedQuizIndexLst.current.length}.\nAre you sure you want to finish the quiz?`;
+      msg = `Your result : ${result.correctAnswerCount}/${result.completedQuizCount}.\nAre you sure you want to finish the quiz?`;
     }
 
     setCanOpenFeedbackDialog({
@@ -148,7 +169,7 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
       <FeedbackDialog
         data={canOpenFeedbackDialog.data}
         onClose={canOpenFeedbackDialog.callBackFn}
-        isCancelBtnActive
+        isCancelBtnActive={canOpenFeedbackDialog.isCancelBtnActive}
       />
     );
   }
@@ -157,6 +178,8 @@ function AnswerContent({ currentQuiz, currentQuizIndex }) {
     setCanOpenFeedbackDialog({
       state: false,
       data: null,
+      isCancelBtnActive: false,
+      callBackFn: null,
     });
   }
   // #endregion

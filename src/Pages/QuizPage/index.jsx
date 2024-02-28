@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Typography } from "@mui/material";
 import FeedbackDialog from "Utils/FeedbackDialog";
 import { PathsUrls } from "Utils/Data";
@@ -20,6 +20,9 @@ function QuizPage({ quizLst }) {
     }
   }, [quizLst]);
 
+  const completedQuizIndexLst = useRef([]);
+  const correctAnswerCount = useRef(0);
+
   // #endregion
 
   // #region UTIL FNS
@@ -27,6 +30,20 @@ function QuizPage({ quizLst }) {
   // MIN(INCLUDED) MAX(EXCLUDED)
   function randomNumber(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  function updateQuizResultCount(isCorrectAnswer) {
+    if (isCorrectAnswer) {
+      correctAnswerCount.current += 1;
+    }
+    completedQuizIndexLst.current.push(currentQuizIndex);
+  }
+
+  function getCurrentQuizResult() {
+    return {
+      correctAnswerCount: correctAnswerCount.current,
+      completedQuizCount: completedQuizIndexLst.current.length,
+    };
   }
   // #endregion
 
@@ -72,7 +89,8 @@ function QuizPage({ quizLst }) {
     answerContent = (
       <AnswerContent
         currentQuiz={quizLst[currentQuizIndex]}
-        currentQuizIndex={currentQuizIndex}
+        updateQuizResultCount={updateQuizResultCount}
+        getCurrentQuizResult={getCurrentQuizResult}
       />
     );
   }

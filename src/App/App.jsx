@@ -20,10 +20,30 @@ function App() {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#0f0",
+      main: "rgb(92, 72, 163)",
     },
     secondary: {
-      main: "#00f",
+      main: "rgb(240, 240, 240)",
+    },
+    success: {
+      main: "#40ff00",
+    },
+    error: {
+      main: "#ff0000",
+    },
+    warning: {
+      main: "#ff8c1a",
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            backgroundColor: "rgba(200, 200, 200,0.7)",
+          },
+        },
+      },
     },
   },
   typography: {
